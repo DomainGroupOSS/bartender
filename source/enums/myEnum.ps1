@@ -1,0 +1,4 @@
+enum stringsAttached {
+    a
+    string
+}
