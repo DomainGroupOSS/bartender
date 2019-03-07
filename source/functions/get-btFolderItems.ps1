@@ -128,9 +128,9 @@ function get-btFolderItems
     )
     begin{
         #Return the script name when running verbose, makes it tidier
-        write-verbose "===========Executing $$(MyInvocation.InvocationName)==========="
+        write-verbose "===========Executing $($MyInvocation.InvocationName)==========="
         #Return the sent variables when running debug
-        Write-Debug "BoundParams: $$($MyInvocation.BoundParameters|Out-String)"
+        Write-Debug "BoundParams: $($MyInvocation.BoundParameters|Out-String)"
         if($path[-1] -eq '\')
         {
             write-verbose 'Removing extra \ from path'

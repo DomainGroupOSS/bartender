@@ -217,9 +217,7 @@ function new-btProject
         [int]$minorVersion = 0,
         [int]$buildVersion = 0,
         [string]$modulePath = $(get-location).path,
-        [string]$configFile = 'btConfig.xml',
-        [string]$licenseUri
-        [string]$projectUri
+        [string]$configFile = 'btConfig.xml'
     )
     begin{
         #Return the script name when running verbose, makes it tidier
@@ -359,16 +357,6 @@ function new-btProject
             }else{
                 $autoDocument  = $true
             }
-        }
-
-        if(!$projectUri)
-        {
-            
-        }
-
-        if(!$licenseUri)
-        {
-            
         }
 
         write-verbose 'Configuring config file'

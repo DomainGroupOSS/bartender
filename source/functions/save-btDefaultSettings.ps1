@@ -85,7 +85,10 @@ function save-btDefaultSettings
         [Nullable[boolean]]$publishOnBuild,
         [Nullable[boolean]]$autoDocument,
         [Nullable[boolean]]$runPesterTests,
-        [switch]$update
+        [Nullable[boolean]]$includeGitDetails,
+        [switch]$update,
+        [string]$projectUri,
+        [string]$licenseUri
     )
     begin{
         #Return the script name when running verbose, makes it tidier

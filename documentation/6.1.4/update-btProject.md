@@ -5,22 +5,20 @@ online version:
 schema: 2.0.0
 ---
 
-# new-btProject
+# update-btProject
 
 ## SYNOPSIS
-Start a new bartender project
-Make sure you are in a decent folder location as it uses root
+Provide a way to update an existing module
 
 ## SYNTAX
 
 ```
-new-btProject [-moduleName] <String> [-moduleDescription] <String> [[-repository] <String[]>]
+update-btProject [[-moduleName] <String>] [[-moduleDescription] <String>] [[-repository] <String[]>]
  [[-moduleAuthor] <String[]>] [[-companyName] <String>] [[-minimumPsVersion] <Version>]
  [[-AutoIncrementRevision] <Boolean>] [[-RemoveSingleLineQuotes] <Boolean>] [[-RemoveEmptyLines] <Boolean>]
  [[-trimSpaces] <Boolean>] [[-publishOnBuild] <Boolean>] [[-runPesterTests] <Boolean>]
- [[-autoDocument] <Boolean>] [[-RequiredModules] <Array>] [[-Tags] <String[]>] [[-majorVersion] <Int32>]
- [[-minorVersion] <Int32>] [[-buildVersion] <Int32>] [[-modulePath] <String>] [[-configFile] <String>]
- [<CommonParameters>]
+ [[-autoDocument] <Boolean>] [[-RequiredModules] <Array>] [[-Tags] <String[]>] [[-modulePath] <String>]
+ [[-configFile] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,15 +58,15 @@ Will make a new publishtoken.txt that _should_ not be tracked by GIT
 ## PARAMETERS
 
 ### -moduleName
-Mandatory
-The name of your module
+If you want to update the name of your module
+Will not reset the versioning
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 1
 Default value: None
 Accept pipeline input: False
@@ -76,15 +74,14 @@ Accept wildcard characters: False
 ```
 
 ### -moduleDescription
-Mandatory
-Description of your module
+Update the description of your module
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -92,8 +89,7 @@ Accept wildcard characters: False
 ```
 
 ### -repository
-Default powershelf
-The Powershell repository to automatically publish to
+Change the default repository(s) to publish to
 
 ```yaml
 Type: String[]
@@ -108,9 +104,7 @@ Accept wildcard characters: False
 ```
 
 ### -moduleAuthor
-Module Author
-Will use $env:USERNAME by default
-Used in module manifest
+Will append to the authors list
 
 ```yaml
 Type: String[]
@@ -125,9 +119,7 @@ Accept wildcard characters: False
 ```
 
 ### -companyName
-Company name
-Will use Domain Group by default
-Used in module manifest
+{{Fill companyName Description}}
 
 ```yaml
 Type: String
@@ -290,7 +282,6 @@ Accept wildcard characters: False
 ```
 
 ### -Tags
-Default Tags = 'Domain','Devops'
 The tags to apply in the manifest, helping when searching repositories
 
 ```yaml
@@ -305,58 +296,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -majorVersion
-Major version to start at
-Default is 1
-Only required if you want to start at something other than 1 coz your special
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 16
-Default value: 1
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -minorVersion
-Minor version to start at
-Default is 0
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 17
-Default value: 0
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -buildVersion
-Build version to start at
-Default is 0
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 18
-Default value: 0
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -modulePath
-Path of your module
-Will use the current path by default
+{{Fill modulePath Description}}
 
 ```yaml
 Type: String
@@ -364,16 +305,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 16
 Default value: $(get-location).path
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -configFile
-The file to save the config file as
-Defaults to 'btConfig.xml'
-Don't change this, I havent really written it to deal with poor names
+{{Fill configFile Description}}
 
 ```yaml
 Type: String
@@ -381,7 +320,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 17
 Default value: BtConfig.xml
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -441,5 +380,15 @@ Changelog:
         - Updated repository to allow multiple arguments
             - Updated -start-btbuild and publish-btModule cmdlets as a result
             - Allows you to set multiple default repositories to publish to
+    2019-02-25 - AA
+        - Fixed some issues with checking the config file
+    2019-03-04 - AA
+        - Fixed this up so that it correctly used existing settings
+            - Would overwrite existing settings with defaults prior
+        - Fixed issue where moduleName and Description were getting dropped
+            - Therefore causing this script to always error
+        - Fix the GUID getting dropped
+        - Fix version rebasing back to 0 by removing it as an update version
+            - Can still be updated manually if needed
 
 ## RELATED LINKS
