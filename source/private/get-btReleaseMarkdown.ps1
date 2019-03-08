@@ -32,6 +32,7 @@ function get-btReleaseMarkdown
             
             
             Changelog:
+
                 2019-03-06 - AA
                     
                     - Initial Script
@@ -46,6 +47,14 @@ function get-btReleaseMarkdown
                     - Moved everything into a single hear-string
                     - Added a dumb way to close bracket for md link
                     - Fixed a bug where I was multiplying the length by a kb instead of dividing
+
+                2019-03-08 - AA
+                    - Reduced kb decimal places to 2
+                    - Removed the dumb way to close bracket for md link
+                    - Fixed the markdown link
+                    - Changed the codeblocks to markdown tables
+                    - Center aligned the top badges
+                    - Moved the bartender badge to the right
                     
         .COMPONENT
             Bartender
@@ -90,10 +99,6 @@ function get-btReleaseMarkdown
         $manifestPath = "$modulePath\$($configSettings.moduleName)\$versionString\$($configSettings.moduleName).psd1"
         $metadata = import-metadata -Path $manifestPath
 
-        write-verbose 'Setting some defaults'
-        $codeblockString = '```'
-
-
         write-verbose 'Setting Git Details'
         $gitDetails = get-btGitDetails -modulePath $modulePath
 
@@ -106,7 +111,7 @@ function get-btReleaseMarkdown
                 origin = $gitDetails.origin
                 commit = $gitDetails.commitShort
             }
-            $gitMarkdown = "---`n## Git Details`n$codeblockString`n$($gitHt|format-table|out-string)`n$codeblockString`n"
+            $gitMarkdown = "---`n## Git Details`n$(get-btMarkdownFromHashtable $gitHt)`n"
             
         }
 
@@ -118,14 +123,14 @@ function get-btReleaseMarkdown
         {
 
             write-verbose 'Creating Summary Block'
-            $summaryMarkdown = "---`n## Changes Summary`n$codeblockString`n$($changeDetails.summary |format-table|out-string)`n$codeblockString`n"
+            $summaryMarkdown = "---`n## Changes Summary`n$(get-btMarkdownFromHashtable $changeDetails.summary)`n"
 
 
 
             write-verbose 'Creating Files Section' 
             $mdFileStringSelector = @{
                 name = 'mdString'
-                expression = {"|$($_.basename)|$($_.relativePath)|$($_.extension)|$([math]::round($($_.length / 1kb),3))|"}
+                expression = {"|$($_.basename)|$($_.relativePath)|$($_.extension)|$([math]::round($($_.length / 1kb),2))|"}
             }
             $filesHeader = "|name|path|extension|size(kb)`n|----------------|--------------------------------|-----|-----|"
             $newFiles = $($changeDetails.files|where-object{$_.fileIsNew -eq $true}|select-object $mdFileStringSelector).mdString | out-string
@@ -148,12 +153,13 @@ function get-btReleaseMarkdown
 
 
             write-verbose 'Creating Functions Section' 
-            
+            <#
             $blobLink = "[link](../blob/$branch/documentation/$versionString"
             $closeBracket = ')'
+            #>
             $mdFunctionStringSelector = @{
                 name = 'mdString'
-                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown -and $branch){"$blobLink$($_.function).md$closeBracket"})|$($_.relativePath)|"}
+                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown){"[link](../$versionString/functions/$($_.function).md)"})|$($_.relativePath)|"}
             }
 
             $functionsHeader = "|function|type|mdLink|filename|`n|-|-|-|-|"
@@ -194,7 +200,7 @@ function get-btReleaseMarkdown
         if($metadata.privatedata.pester)
         {
             write-verbose 'Adding Pester Details'
-            $pesterMarkdown = "---`n## Pester Details`n$codeblockString`n$($metadata.privatedata.pester|format-table|out-string)`n$codeblockstring`n"
+            $pesterMarkdown = "---`n## Pester Details`n$(get-btMarkdownFromHashtable $metadata.privatedata.pester)`n"
 
             $badgeColor = switch ($($metadata.privatedata.pester.codecoverage)) {
                 {$_ -le 20} {"red";break;}
@@ -243,7 +249,7 @@ function get-btReleaseMarkdown
             Company = $($metaData.CompanyName)
 
         }
-        $overviewMarkdown = "## Overview`n$codeblockstring`n$($overviewHt| format-table|out-string)`n$codeblockstring"
+        $overviewMarkdown = "## Overview`n$(get-btMarkdownFromHashtable $overviewHt)`n"
 
         write-verbose 'Generating Final Markdown'
 
@@ -252,9 +258,9 @@ function get-btReleaseMarkdown
         $markdown = @"
 # $($configSettings.moduleName) - Release $versionString
 
-| Version | Code Coverage | Bartender Version| Code Based Help Coverage |
-|-------------------|-------------------|-------------------|-------------------|
-|![releasebadge]|![pesterbadge]|![btbadge]|![helpcoveragebadge]|
+| Version | Code Coverage | Code Based Help Coverage |Bartender Version|
+|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
+|![releasebadge]|![pesterbadge]|![helpcoveragebadge]|![btbadge]|
 
 $overviewMarkdown
 
