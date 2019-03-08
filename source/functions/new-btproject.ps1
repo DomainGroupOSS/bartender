@@ -211,6 +211,7 @@ function new-btProject
         [Nullable[boolean]]$publishOnBuild,
         [Nullable[boolean]]$runPesterTests,
         [Nullable[boolean]]$autoDocument,
+        [Nullable[boolean]]$useGitDetails,
         [array]$RequiredModules,
         [string[]]$Tags,
         [int]$majorVersion = 1,
@@ -218,8 +219,9 @@ function new-btProject
         [int]$buildVersion = 0,
         [string]$modulePath = $(get-location).path,
         [string]$configFile = 'btConfig.xml',
-        [string]$licenseUri
-        [string]$projectUri
+        [string]$licenseUri,
+        [string]$projectUri,
+        [string]$iconUri
     )
     begin{
         #Return the script name when running verbose, makes it tidier
@@ -361,14 +363,14 @@ function new-btProject
             }
         }
 
-        if(!$projectUri)
+        if($useGitDetails -eq $null)
         {
-            
-        }
-
-        if(!$licenseUri)
-        {
-            
+            if($userDefaults.useGitDetails -ne $null)
+            {
+                $useGitDetails = $userDefaults.useGitDetails
+            }else{
+                $useGitDetails  = $true
+            }
         }
 
         write-verbose 'Configuring config file'
@@ -479,6 +481,10 @@ function new-btProject
             runPesterTests = $runPesterTests
             bartenderVersion = $($(get-module -name Bartender).version.tostring())
             autoDocument = $autoDocument
+            useGitDetails = $useGitDetails
+            licenseUri = $licenseUri
+            projectUri = $projectUri
+            iconUri = $iconUri
         }
         Write-Debug "Your Config Object:`n`n$($config|Out-String)"
         if(!$config.version -or !$config.moduleName -or !$config.moduleAuthor -or !$config.companyName)

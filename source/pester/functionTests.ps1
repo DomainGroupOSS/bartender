@@ -712,7 +712,7 @@ describe 'Check documentation folder after publish' {
         it 'Should have correct document version folder' {
             test-path "$btTestPath\documentation\$contextVer" |should -be $true
         }
-        $documentItems  = get-childitem "$btTestPath\documentation\$contextVer\"
+        $documentItems  = get-childitem "$btTestPath\documentation\$contextVer\functions"
         it 'Should have 2 items in the folder' {
             $documentItems.count |should -be 2
         }
@@ -723,7 +723,7 @@ describe 'Check documentation folder after publish' {
             $documentItems.name |should -Contain 'get-helloworld.md'
         }
         it 'Should find the item via test-path' {
-            test-path "$btTestPath\documentation\$contextVer\get-helloworld.md" |should -be $true
+            test-path "$btTestPath\documentation\$contextVer\functions\get-helloworld.md" |should -be $true
         }
     }
 }

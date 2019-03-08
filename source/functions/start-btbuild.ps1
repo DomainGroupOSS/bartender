@@ -710,6 +710,59 @@ function start-btbuild
             $splatManifest.ReleaseNotes = $ReleaseNotes
         }
 
+        
+        if($scriptVars.config.useGitDetails -eq $true)
+        {
+            write-verbose 'Adding Git Details'
+            $scriptVars.gitSettings = get-btGitDetails -modulePath $invocationPath
+            if($scriptVars.gitSettings)
+            {
+                write-verbose 'Retrieved git details, to splatManifest'
+
+                #Use origin as projectUri
+                if($scriptVars.gitSettings.origin -and $scriptVars.gitSettings.origin.length -gt 5)
+                {
+                    $splatManifest.projectUri = $scriptVars.gitSettings.origin
+                }
+
+                #See if we have a license file, if we do add the license URI
+                #Could be done with a web-request, but then what do we do with private repos
+                if($(test-path "$invocationPath\LICENSE"))
+                {
+                    $splatManifest.licenseUri = "$($scriptVars.gitSettings.origin)/blob/$($($($scriptVars.gitSettings.branch).replace('*','')).trim())/LICENSE"
+                }
+
+
+                #See if icon.png exists and if it does, add it in as well
+                if($(test-path "$invocationPath\icon.png"))
+                {
+                    $splatManifest.iconUri = "$($scriptVars.gitSettings.origin)/icon.png"
+                }
+                    
+            }else{
+                write-warning 'useGitDetails is set to true, but was unable to get the repository settings'
+            }
+            
+        }
+
+        if($scriptVars.config.licenseUri -and $scriptVars.config.licenseUri.length -gt 5)
+        {   
+            write-verbose 'Adding config LicenseUri'
+            $splatManifest.licenseUri = $scriptVars.config.licenseUri
+        }
+
+        if($scriptVars.config.projectUri -and $scriptVars.config.projectUri.length -gt 5)
+        {   
+            write-verbose 'Adding config projectUri'
+            $splatManifest.projectUri = $scriptVars.config.projectUri
+        }
+
+        if($scriptVars.config.iconUri -and $scriptVars.config.iconUri.length -gt 5)
+        {   
+            write-verbose 'Adding config iconUri'
+            $splatManifest.iconUri = $scriptVars.config.iconUri
+        }
+
         if($scriptVars.functionsToExport.Count -ge 1)
         {
             Write-Verbose 'Adding Function Resources'
@@ -894,7 +947,7 @@ function start-btbuild
                         $codeCoverage = [math]::round($($global:lastPesterResult.codecoverage.numberOfCommandsExecuted/$global:lastPesterResult.codecoverage.numberofCommandsAnalyzed)*100,0)
                         $passed = [math]::round($($($global:lastPesterResult.PassedCount / $global:lastPesterResult.TotalCount)*100),0)
                         $metadata.privatedata.pester = @{}
-                        $metadata.privatedata.pester.codecoverage = "$codeCoverage %"
+                        $metadata.privatedata.pester.codecoverage = $codeCoverage
                         $metadata.privatedata.pester.time = $global:lastPesterResult.time.ToString()
                         $metadata.privatedata.pester.passed = "$passed %"
                     }

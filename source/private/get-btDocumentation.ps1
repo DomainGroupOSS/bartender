@@ -122,7 +122,7 @@ function get-btDocumentation
                 using module '$($scriptVars.moduleFolder)\'
                 import-module PlatyPS
                 `$moduleData = Import-PowerShellDataFile '$($scriptVars.moduleFolder)\$($scriptVars.config.moduleName).psd1'
-                `$outputFolder = '$($invocationPath)\documentation\$($scriptVars.versionAsTag)'
+                `$outputFolder = '$($invocationPath)\documentation\$($scriptVars.versionAsTag)\functions'
                 if(!`$(test-path `$outputFolder))
                 {
                     new-item -itemtype directory -path `$outputFolder
@@ -155,6 +155,16 @@ function get-btDocumentation
             $job = start-job -ScriptBlock $scriptBlock 
             Wait-Job $job | Out-Null
             write-verbose 'Help should be created'
+            write-verbose 'Creating release notes'
+            $releaseNotesPath = "$($invocationPath)\documentation\$($scriptVars.versionAsTag)\release.md"
+            try{
+
+                get-btReleaseMarkdown|out-file $releaseNotesPath
+                write-verbose 'release.md created'
+            }catch{
+                write-warning 'Error creating release notes'
+            }
+            
         }
     }
 }

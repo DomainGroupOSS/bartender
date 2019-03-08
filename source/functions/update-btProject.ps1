@@ -192,10 +192,14 @@ function update-btProject
         [Nullable[boolean]]$publishOnBuild,
         [Nullable[boolean]]$runPesterTests,
         [Nullable[boolean]]$autoDocument,
+        [Nullable[boolean]]$useGitDetails,
         [array]$RequiredModules,
         [string[]]$Tags,
         [string]$modulePath = $(get-location).path,
-        [string]$configFile = 'btConfig.xml'
+        [string]$configFile = 'btConfig.xml',
+        [string]$licenseUri,
+        [string]$projectUri,
+        [string]$iconUri
     )
     begin{
         #Return the script name when running verbose, makes it tidier
@@ -427,6 +431,48 @@ function update-btProject
             }
         }
 
+        if($useGitDetails -eq $null)
+        {
+            if($existingSettings.useGitDetails -ne $null)
+            {
+                $useGitDetails = $existingSettings.useGitDetails
+            }
+            elseif($userDefaults.useGitDetails -ne $null)
+            {
+                $useGitDetails = $userDefaults.useGitDetails
+            }else{
+                $useGitDetails  = $true
+            }
+        }
+
+        if($licenseUri -eq $null)
+        {
+            if($existingSettings.licenseUri -ne $null)
+            {
+                $licenseUri = $existingSettings.licenseUri
+            }
+            elseif($userDefaults.licenseUri -ne $null)
+            {
+                $licenseUri = $userDefaults.licenseUri
+            }else{
+                $licenseUri  = $true
+            }
+        }
+
+        if($licenseUri -eq $null)
+        {
+            if($existingSettings.licenseUri -ne $null)
+            {
+                $licenseUri = $existingSettings.licenseUri
+            }
+            elseif($userDefaults.licenseUri -ne $null)
+            {
+                $licenseUri = $userDefaults.licenseUri
+            }else{
+                $licenseUri  = $true
+            }
+        }
+
         write-verbose 'Configuring config file'
         $configPath = "$modulePath\$configFile"
         $throwExceptions = @{}
@@ -509,6 +555,11 @@ function update-btProject
                     throw 'Required Modules should be a string or a Hashtable'
                 }
             }
+        }else{
+            if($existingSettings.requiredModules)
+            {
+                $requiredModules = $existingSettings.requiredModules
+            }
         }
 
         #Create the folder structure for support items
@@ -538,6 +589,10 @@ function update-btProject
             runPesterTests = $runPesterTests
             bartenderVersion = $($(get-module -name Bartender).version.tostring())
             autoDocument = $autoDocument
+            useGitDetails = $useGitDetails
+            licenseUri = $licenseUri
+            projectUri = $projectUri
+            iconUri = $iconUri
         }
         Write-Debug "Your Config Object:`n`n$($config|Out-String)"
         if(!$config.version -or !$config.moduleName -or !$config.moduleAuthor -or !$config.companyName)

@@ -110,12 +110,13 @@ new-btProject -moduleName myBtProject -moduleDescription 'my bartender module'
 
 ### Why Bartender?
 
-### Thanks and Mentions
+### Thank
 
-Thanks to [Warren F](http://ramblingcookiemonster.github.io) and [Kevin Marquette](https://powershellexplained.com/) for their fantastic blogs, for validating some of the ways we were doing things, and for correcting many others
-
-
+###
+Owned and maintained by Domain Group
+[domainlogo]
 
 ### Bootstrapping
 Bartender was built using a bootstrapped version of itself, so the version is higher than expected due to testing incrementation.
 
+[domainlogo]: http://ffx.adcentre.com.au.s3.amazonaws.com/trademarketing/domain/logos/2016/Domain/PNG/Domain_logo_RGB.png

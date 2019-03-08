@@ -1,4 +1,0 @@
-enum stringsAttached {
-    a
-    string
-}

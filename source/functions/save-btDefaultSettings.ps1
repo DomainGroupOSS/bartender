@@ -44,6 +44,10 @@ function save-btDefaultSettings
         .PARAMETER autoDocument
             Default autoDocument Value
 
+        .PARAMETER useGitDetails
+            Grab the license and project URI from Git details
+            Use them on manifest creation
+
         .PARAMETER update
             Use to overwrite any existing saved default settings
 
@@ -85,10 +89,9 @@ function save-btDefaultSettings
         [Nullable[boolean]]$publishOnBuild,
         [Nullable[boolean]]$autoDocument,
         [Nullable[boolean]]$runPesterTests,
-        [Nullable[boolean]]$includeGitDetails,
-        [switch]$update,
-        [string]$projectUri,
-        [string]$licenseUri
+        [Nullable[boolean]]$useGitDetails,
+        [switch]$update
+        
     )
     begin{
         #Return the script name when running verbose, makes it tidier
@@ -207,6 +210,12 @@ function save-btDefaultSettings
         {
             write-verbose 'Setting default autoDocument'
             $btDefaultSettings.autoDocument = $autoDocument
+        }
+
+        if($useGitDetails -ne $null)
+        {
+            write-verbose 'Setting default autoDocument'
+            $btDefaultSettings.useGitDetails = $useGitDetails
         }
 
         write-debug 'Save the file'
