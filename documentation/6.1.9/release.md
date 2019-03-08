@@ -1,7 +1,7 @@
 ﻿# bartender - Release 6.1.9
 | Version | CodeCoverage | Bartener Version|
 |-------------------|-------------------|-------------------|
-|[![releasebadge]]|[![pesterbadge]]|[![btbadge]]|
+|![releasebadge]|![pesterbadge]|![btbadge]|
 ## Overview
 ```
 
