@@ -20,39 +20,6 @@ The primary goals were collaboration, generalisation and proper release lifecycl
 The list of secondary goals has kept growing as we found issues with standard PowerShell modules or had requirements for specific tasks. In all implementations we tried to stay true to our 4 primary goals.
 
 
-
-## Module Features
-
- ### 
- - Collaboration
-    - Standard folder layout and file locations
-    - Allow customisation of file orders and subfolders within the framework
-    - Provide an integrated way of updating the framework
-    - Simplify module creation and focus on function creation
-    - Keep all the build settings in a single config file
-    - Centralize your scripts
- - Separation of Concerns
-    - Source files can be separated on a functional level
-    - Classes, DSCClasses, Enums and Functions handled according to their needs
-      - Separation of private and public functions
-      - Use preload scripts for enums and classes to ensure they are scoped both privately and publicly
- - Easier Module-Wide Pester Testing
-    - Include basic pester tests that:
-      - Ensure we run in a clean-tree
-      - Ensure the module compiles and loads correctly
-    - Make adding new tests as simple as making a new ps1 script in the appropriate folder
- - Release Management
-    - Automatic publishing to a repository on test-passing
-    - Revision increasing for test cycles
-    - Version increases (Major, Minor, Build) for releases
-    - Integrate a basic release notes markdown
- - Better Module Customisation
-    - Deal with extended module manifest PrivateData
- - Use PlatyPS for version documentation
-    - Automatically compile the inline help into markdown
-    - Allow for the documentation to evolve with the code naturally
-    - Ensure properly documented advanced functions create appropriate markdown
-
 ## Quick Start Guide
 
 ### Install the module
@@ -60,9 +27,9 @@ The list of secondary goals has kept growing as we found issues with standard Po
 ```powershell
 install-module -name bartender
 ```
-<sup>*assumes a repository is already in place</sup>
+> assumes a repository is already in place
 
-<sup>*Check [here](https://powershellexplained.com/2018-03-03-Powershell-Using-a-NuGet-server-for-a-PSRepository/?utm_source=blog&utm_medium=blog&utm_content=tags) for an execelent blog post from Kevin Marquette for more details</sup>
+> Check [here](https://powershellexplained.com/2018-03-03-Powershell-Using-a-NuGet-server-for-a-PSRepository/?utm_source=blog&utm_medium=blog&utm_content=tags) for an execelent blog post from Kevin Marquette for more details
 
 ### Setup your bartender publish repository
 
@@ -70,9 +37,9 @@ install-module -name bartender
 ```powershell
 save-btRepository -repository myRepo -token myNugetToken -credential $(get-credential)
 ```
-<sup>*Token is used for publishing to nuget repositories and is not needed for fileshare repositories</sup>
+> Token is used for publishing to nuget repositories and is not needed for fileshare repositories
 
-<sup>*Credentials are used for checking module dependancies and are only required if the repository is private</sup>
+> Credentials are used for checking module dependancies and are only required if the repository is private
 
 ### Setup your bartender defaults
 
@@ -106,6 +73,40 @@ new-btProject -moduleName myBtProject -moduleDescription 'my bartender module'
 ### Start Coding
 
 
+## Module Features
+
+ ### 
+ - Collaboration
+    - Standard folder layout and file locations
+    - Allow customisation of file orders and subfolders within the framework
+    - Provide an integrated way of updating the framework
+    - Simplify module creation and focus on function creation
+    - Keep all the build settings in a single config file
+    - Centralize your scripts
+ - Separation of Concerns
+    - Source files can be separated on a functional level
+    - Classes, DSCClasses, Enums and Functions handled according to their needs
+      - Separation of private and public functions
+      - Use preload scripts for enums and classes to ensure they are scoped both privately and publicly
+ - Easier Module-Wide Pester Testing
+    - Include basic pester tests that:
+      - Ensure we run in a clean-tree
+      - Ensure the module compiles and loads correctly
+    - Make adding new tests as simple as making a new ps1 script in the appropriate folder
+ - Release Management
+    - Automatic publishing to a repository on test-passing
+    - Revision increasing for test cycles
+    - Version increases (Major, Minor, Build) for releases
+    - Integrate a basic release notes markdown
+ - Better Module Customisation
+    - Deal with extended module manifest PrivateData
+ - Use PlatyPS for version documentation
+    - Automatically compile the inline help into markdown
+    - Allow for the documentation to evolve with the code naturally
+    - Ensure properly documented advanced functions create appropriate markdown
+
+
+
 ## Misc
 
 ### Why Bartender?
@@ -114,9 +115,10 @@ new-btProject -moduleName myBtProject -moduleDescription 'my bartender module'
 
 ###
 Owned and maintained by Domain Group
-[domainlogo]
+[powershellbadge]
 
 ### Bootstrapping
 Bartender was built using a bootstrapped version of itself, so the version is higher than expected due to testing incrementation.
 
-[domainlogo]: http://ffx.adcentre.com.au.s3.amazonaws.com/trademarketing/domain/logos/2016/Domain/PNG/Domain_logo_RGB.png
+[powershellbadge]: https://img.shields.io/static/v1.svg?label=language&message=PowerShell%20%3E_&color=blue&logo=powershell&style=plastic
+

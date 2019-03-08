@@ -70,6 +70,11 @@ function save-btDefaultSettings
                         - Obviously the save path is less than ideal
                         - Also unsure what will happen with roaming profiles
                         - What if we include _this_ computername in the filename
+
+
+                2019-03-07 - AA
+                    
+                    - Added way to save useGitDetails
                     
         .COMPONENT
             What cmdlet does this script live in

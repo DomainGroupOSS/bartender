@@ -102,6 +102,18 @@ function new-btProject
 
             Specify that when running start-btBuild, you want to automatically run get-btDocumentation as well
 
+        .PARAMETER useGitDetails
+            Try and get the license, project URIs from GIT
+
+        .PARAMETER licenseUri
+            Override the licenseUri
+
+        .PARAMETER iconUri
+            Override the iconUri
+
+        .PARAMETER projectUri
+            Override the projectUri
+
         .EXAMPLE
             new-btProject -moduleName myModule -moduleDescription 'A new module'
             

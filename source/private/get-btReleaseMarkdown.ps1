@@ -14,6 +14,11 @@ function get-btReleaseMarkdown
 
         .PARAMETER configFile
             btConfig xml file
+
+        .PARAMETER versionOverride
+            Used to build based on a different version tag
+
+            Generally used for debug only
             
         ------------
         .EXAMPLE
@@ -30,9 +35,20 @@ function get-btReleaseMarkdown
                 2019-03-06 - AA
                     
                     - Initial Script
+
+                2019-03-08 - AA
+                    
+                    - Fixed up some spelling mistakes
+                    - Fixed the badges
+                    - Added files
+                    - Added ability to override version
+                    - Added badge for commentBasedHelp
+                    - Moved everything into a single hear-string
+                    - Added a dumb way to close bracket for md link
+                    - Fixed a bug where I was multiplying the length by a kb instead of dividing
                     
         .COMPONENT
-            What cmdlet does this script live in
+            Bartender
     #>
 
     [CmdletBinding()]
@@ -109,7 +125,7 @@ function get-btReleaseMarkdown
             write-verbose 'Creating Files Section' 
             $mdFileStringSelector = @{
                 name = 'mdString'
-                expression = {"|$($_.basename)|$($_.relativePath)|$($_.extension)|$([math]::round($($_.length * 1kb),3))|"}
+                expression = {"|$($_.basename)|$($_.relativePath)|$($_.extension)|$([math]::round($($_.length / 1kb),3))|"}
             }
             $filesHeader = "|name|path|extension|size(kb)`n|----------------|--------------------------------|-----|-----|"
             $newFiles = $($changeDetails.files|where-object{$_.fileIsNew -eq $true}|select-object $mdFileStringSelector).mdString | out-string
@@ -134,9 +150,10 @@ function get-btReleaseMarkdown
             write-verbose 'Creating Functions Section' 
             
             $blobLink = "[link](../blob/$branch/documentation/$versionString"
+            $closeBracket = ')'
             $mdFunctionStringSelector = @{
                 name = 'mdString'
-                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown -and $branch){"$blobLink$($_.function).md"})|$($_.relativePath)|"}
+                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown -and $branch){"$blobLink$($_.function).md$closeBracket"})|$($_.relativePath)|"}
             }
 
             $functionsHeader = "|function|type|mdLink|filename|`n|-|-|-|-|"
@@ -201,7 +218,23 @@ function get-btReleaseMarkdown
 
         $btbadge = "[btbadge]: https://img.shields.io/static/v1.svg?label=bartenderVer&message=$($metadata.PrivateData.bartenderVersion)&color=blueviolet"
         $releaseBadge = "[releasebadge]: https://img.shields.io/static/v1.svg?label=version&message=$($metadata.moduleVersion)&color=blue"
-
+        $commentBasedHelpCoverage = $changeDetails.summary.commentBasedHelpCoverage
+        if(!$commentBasedHelpCoverage)
+        {
+            $commentBasedHelpCoverage = 'na'
+        }
+        $badgeColor = switch ($commentBasedHelpCoverage) {
+            {$_ -le 20} {"red";break;}
+            {$_ -le 40} {"orange";break;}
+            {$_ -le 60} {"yellow"; break;}
+            {$_ -le 75} {"yellowgreen"; break;}
+            {$_ -le 90} {"green"; break;}
+            {$_ -le 100} {"brightgreen"; break;}
+            default {"lightgrey"; break;}
+        }
+        $helpCoverage = "[helpcoveragebadge]: https://img.shields.io/static/v1.svg?label=commentBasedHelpCoverage&message=$commentBasedHelpCoverage&color=$badgeColor"
+        
+        
         write-verbose 'Creating Overview'
         $overviewHt = @{
             BuildDate = $($metaData.privatedata.builtOn)
@@ -219,9 +252,9 @@ function get-btReleaseMarkdown
         $markdown = @"
 # $($configSettings.moduleName) - Release $versionString
 
-| Version | CodeCoverage | Bartener Version|
-|-------------------|-------------------|-------------------|
-|[releasebadge]|[pesterbadge]|[btbadge]|
+| Version | Code Coverage | Bartender Version| Code Based Help Coverage |
+|-------------------|-------------------|-------------------|-------------------|
+|![releasebadge]|![pesterbadge]|![btbadge]|![helpcoveragebadge]|
 
 $overviewMarkdown
 
@@ -231,7 +264,6 @@ $(
         "### Release Notes:`n$($metadata.privatedata.psdata.releasenotes)"
     }
 )
-
 
 $summaryMarkdown
 
@@ -248,6 +280,7 @@ $gitMarkdown
 $pesterbadge
 $btbadge
 $releaseBadge
+$helpCoverage
 "@
 
         $markdown

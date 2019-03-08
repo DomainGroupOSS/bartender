@@ -12,8 +12,18 @@ function get-btChangeDetails
             See if the lastModified is after the previous release
             Note that the functions were potentially changed
             
-        .PARAMETER module
-            What is it, why do you want it
+        .PARAMETER modulePath
+            Path to module
+
+        .PARAMETER functionFolders
+            What source folders do functions live in
+
+        .PARAMETER configFile
+            btconfig.xml
+
+        .PARAMETER ignoreLast
+            Explicitely get the difference from the release prior to this one
+            Used during build to compare changes from the previous release to the new release
             
         ------------
         .EXAMPLE

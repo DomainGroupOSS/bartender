@@ -70,6 +70,18 @@ function update-btProject
 
             Specify that when running start-btBuild, you want to automatically run get-btDocumentation as well
 
+        .PARAMETER useGitDetails
+            Try and get the license, project URIs from GIT
+
+        .PARAMETER licenseUri
+            Override the licenseUri
+
+        .PARAMETER iconUri
+            Override the iconUri
+
+        .PARAMETER projectUri
+            Override the projectUri
+
         .EXAMPLE
             new-btProject -moduleName myModule -moduleDescription 'A new module'
             
@@ -162,9 +174,11 @@ function update-btProject
                     - Fix version rebasing back to 0 by removing it as an update version
                         - Can still be updated manually if needed
 
-                        
-                    
+                2019-03-08 - AA
+                - Added way to update licenseuri, iconuri and projecturi
 
+                2019-03-08 - AA
+                    - Stopped loosing required modules on update
 
                     
         .COMPONENT

@@ -180,6 +180,11 @@ function start-btbuild
                 2019-03-04
                     - Fixed bugs with update-btproject
 
+                2019-03-06
+                    - Changed code-coverage to be an int
+                    - Added way to get git details for license, project, icon urls
+                    - Added override where these are set in the module config
+
                     
         .COMPONENT
             Bartender

@@ -102,6 +102,18 @@ function new-btProject
 
             Specify that when running start-btBuild, you want to automatically run get-btDocumentation as well
 
+        .PARAMETER useGitDetails
+            Try and get the license, project URIs from GIT
+
+        .PARAMETER licenseUri
+            Override the licenseUri
+
+        .PARAMETER iconUri
+            Override the iconUri
+
+        .PARAMETER projectUri
+            Override the projectUri
+
         .EXAMPLE
             new-btProject -moduleName myModule -moduleDescription 'A new module'
             
@@ -182,6 +194,10 @@ function new-btProject
                         - Updated -start-btbuild and publish-btModule cmdlets as a result
                         - Allows you to set multiple default repositories to publish to
 
+                2019-03-06 - AA
+                    
+                    - Updated to allow useGitDetails
+                    - Updated to store licenseUri,projectUri,inconUri
 
                     
         .COMPONENT

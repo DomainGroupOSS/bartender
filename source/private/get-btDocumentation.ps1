@@ -47,6 +47,10 @@ function get-btDocumentation
                     - Updated to use new folder path
                     - Code clean-up
 
+                2019-03-07 - 2019-02-04 - AA
+                    - Made a call to create md file for release notes
+                    - Moved function help to a functions folder
+
                 
                     
         .COMPONENT

@@ -8,8 +8,8 @@ function get-btGitDetails
         .DESCRIPTION
             Detailed Description
             
-        .PARAMETER path
-            path to git config
+        .PARAMETER modulePath
+            Where does the module live?
             
         ------------
         .EXAMPLE
@@ -26,13 +26,17 @@ function get-btGitDetails
             
         .NOTES
             Author: Adrian Andersson
-            Last-Edit-Date: yyyy-mm-dd
+            Last-Edit-Date: 2019-06-03
             
             
             Changelog:
-                yyyy-mm-dd - AA
+                2019-03-06 - AA
                     
-                    - Changed x for y
+                    - Initial Script
+                
+                2019-03-07 - AA
+                    - Fixed the git commands to run as a job
+                    - Trim the returned data
                     
         .COMPONENT
             What cmdlet does this script live in
