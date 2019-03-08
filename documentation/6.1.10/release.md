@@ -83,16 +83,16 @@ commentBasedHelpCoverage       100
 ### Unmodified Functions
 |function|type|mdLink|filename|
 |-|-|-|-|
-|get-btScriptText|Public|[link](../get-btScriptText.md)|.\get-btScriptText.ps1|
-|publish-btModule|Public|[link](../blob/master/documentation/6.1.10publish-btModule.md)|.\publish-btmodule.ps1|
-|clear-btRepository|Public|[link](../blob/master/documentation/6.1.10clear-btRepository.md)|.\clear-btRepository.ps1|
-|get-btDefaultSettings|Public|[link](../blob/master/documentation/6.1.10get-btDefaultSettings.md)|.\get-btDefaultSettings.ps1|
-|get-btFolderItems|Public|[link](../blob/master/documentation/6.1.10get-btFolderItems.md)|.\get-btFolderItems.ps1|
-|get-btInstalledModule|Public|[link](../blob/master/documentation/6.1.10get-btInstalledModule.md)|.\get-btInstalledModule.ps1|
-|get-btRepository|Public|[link](../blob/master/documentation/6.1.10get-btRepository.md)|.\get-btRepository.ps1|
-|save-btRepository|Public|[link](../blob/master/documentation/6.1.10save-btRepository.md)|.\save-btRepository.ps1|
-|start-btTestPhase|Public|[link](../blob/master/documentation/6.1.10start-btTestPhase.md)|.\start-btTestPhase.ps1|
-|update-btFileStructure|Public|[link](../blob/master/documentation/6.1.10update-btFileStructure.md)|.\update-btFileStructure.ps1|
+|get-btScriptText|Public|[link](../6.1.10/functions/get-btScriptText.md)|.\get-btScriptText.ps1|
+|publish-btModule|Public|[link](../6.1.10/functions/publish-btModule.md)|.\publish-btmodule.ps1|
+|clear-btRepository|Public|[link](../6.1.10/functions/clear-btRepository.md)|.\clear-btRepository.ps1|
+|get-btDefaultSettings|Public|[link](../6.1.10/functions/get-btDefaultSettings.md)|.\get-btDefaultSettings.ps1|
+|get-btFolderItems|Public|[link](../6.1.10/functions/get-btFolderItems.md)|.\get-btFolderItems.ps1|
+|get-btInstalledModule|Public|[link](../6.1.10/functions/get-btInstalledModule.md)|.\get-btInstalledModule.ps1|
+|get-btRepository|Public|[link](../6.1.10/functions/get-btRepository.md)|.\get-btRepository.ps1|
+|save-btRepository|Public|[link](../6.1.10/functions/save-btRepository.md)|.\save-btRepository.ps1|
+|start-btTestPhase|Public|[link](../6.1.10/functions/start-btTestPhase.md)|.\start-btTestPhase.ps1|
+|update-btFileStructure|Public|[link](../6.1.10/functions/update-btFileStructure.md)|.\update-btFileStructure.ps1|
 |add-btBasicTests|Private||.\add-btBasicTests.ps1|
 |add-btFilesAndFolders|Private||.\add-btFilesAndFolders.ps1|
 |get-btScriptFunctions|Private||.\get-btScriptFunctions.ps1|
@@ -101,12 +101,12 @@ commentBasedHelpCoverage       100
 ### Modified Functions
 |function|type|mdLink|filename|
 |-|-|-|-|
-|get-btChangeDetails|Public|[link](../blob/master/documentation/6.1.10get-btChangeDetails.md)|.\get-btChangeDetails.ps1|
-|get-btGitDetails|Public|[link](../blob/master/documentation/6.1.10get-btGitDetails.md)|.\get-btGitDetails.ps1|
-|new-btProject|Public|[link](../blob/master/documentation/6.1.10new-btProject.md)|.\new-btproject.ps1|
-|save-btDefaultSettings|Public|[link](../blob/master/documentation/6.1.10save-btDefaultSettings.md)|.\save-btDefaultSettings.ps1|
-|start-btbuild|Public|[link](../blob/master/documentation/6.1.10start-btbuild.md)|.\start-btbuild.ps1|
-|update-btProject|Public|[link](../blob/master/documentation/6.1.10update-btProject.md)|.\update-btProject.ps1|
+|get-btChangeDetails|Public|[link](../6.1.10/functions/get-btChangeDetails.md)|.\get-btChangeDetails.ps1|
+|get-btGitDetails|Public|[link](../6.1.10/functions/get-btGitDetails.md)|.\get-btGitDetails.ps1|
+|new-btProject|Public|[link](../6.1.10/functions/new-btProject.md)|.\new-btproject.ps1|
+|save-btDefaultSettings|Public|[link](../6.1.10/functions/save-btDefaultSettings.md)|.\save-btDefaultSettings.ps1|
+|start-btbuild|Public|[link](../6.1.10/functions/start-btbuild.md)|.\start-btbuild.ps1|
+|update-btProject|Public|[link](../6.1.10/functions/update-btProject.md)|.\update-btProject.ps1|
 |get-btDocumentation|Private||.\get-btDocumentation.ps1|
 |get-btReleaseMarkdown|Private||.\get-btReleaseMarkdown.ps1|
 
