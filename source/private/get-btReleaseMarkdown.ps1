@@ -55,6 +55,8 @@ function get-btReleaseMarkdown
                     - Changed the codeblocks to markdown tables
                     - Center aligned the top badges
                     - Moved the bartender badge to the right
+                    - Fix the order of unmodified functions
+                    - Fix the spacing around releaseNotes
                     
         .COMPONENT
             Bartender
@@ -162,7 +164,7 @@ function get-btReleaseMarkdown
                 expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown){"[link](../$versionString/functions/$($_.function).md)"})|$($_.relativePath)|"}
             }
 
-            $functionsHeader = "|function|type|mdLink|filename|`n|-|-|-|-|"
+            $functionsHeader = "|function|type|markdown link|filename|`n|-|-|-|-|"
             $newFuncs = $($changeDetails.functions|where-object{$_.fileIsNew -eq $true}|select-object $mdFunctionStringSelector).mdString | out-string
             $unmodFuncs = $($changeDetails.functions|where-object{$_.fileIsModified -eq $false -and $_.fileIsNew -eq $false}|select-object $mdFunctionStringSelector).mdString | out-string
             $modFuncs = $($changeDetails.functions|where-object{$_.fileIsModified -eq $true -and $_.fileIsNew -eq $false}|select-object $mdFunctionStringSelector).mdString | out-string
@@ -179,7 +181,7 @@ function get-btReleaseMarkdown
                 $unmodFuncsMd = "### Unmodified Functions`n$functionsHeader`n$unmodFuncs"
             }
 
-            $functionsMarkdown = "---`n## Functions Summary`n`n$newFuncsMd`n$unmodFuncsMd`n$modFuncsMd"
+            $functionsMarkdown = "---`n## Functions Summary`n`n$newFuncsMd`n$modFuncsMd`n$unmodFuncsMd"
         }
 
 
@@ -222,7 +224,7 @@ function get-btReleaseMarkdown
 
         write-verbose 'Generating GIT Badges'
 
-        $btbadge = "[btbadge]: https://img.shields.io/static/v1.svg?label=bartenderVer&message=$($metadata.PrivateData.bartenderVersion)&color=blueviolet"
+        $btbadge = "[btbadge]: https://img.shields.io/static/v1.svg?label=bartender&message=$($metadata.PrivateData.bartenderVersion)&color=blueviolet"
         $releaseBadge = "[releasebadge]: https://img.shields.io/static/v1.svg?label=version&message=$($metadata.moduleVersion)&color=blue"
         $commentBasedHelpCoverage = $changeDetails.summary.commentBasedHelpCoverage
         if(!$commentBasedHelpCoverage)
@@ -238,7 +240,7 @@ function get-btReleaseMarkdown
             {$_ -le 100} {"brightgreen"; break;}
             default {"lightgrey"; break;}
         }
-        $helpCoverage = "[helpcoveragebadge]: https://img.shields.io/static/v1.svg?label=commentBasedHelpCoverage&message=$commentBasedHelpCoverage&color=$badgeColor"
+        $helpCoverage = "[helpcoveragebadge]: https://img.shields.io/static/v1.svg?label=get-help&message=$commentBasedHelpCoverage&color=$badgeColor"
         
         
         write-verbose 'Creating Overview'
@@ -263,26 +265,26 @@ function get-btReleaseMarkdown
 |![releasebadge]|![pesterbadge]|![helpcoveragebadge]|![btbadge]|
 
 $overviewMarkdown
-
+`n
 $(
     if($metadata.privatedata.psdata.releasenotes)
     {
-        "### Release Notes:`n$($metadata.privatedata.psdata.releasenotes)"
+        "### Release Notes:`n`n$($metadata.privatedata.psdata.releasenotes)`n`n"
     }
 )
-
+`n
 $summaryMarkdown
-
+`n
 $filesMarkdown
-
+`n
 $functionsMarkdown
-
+`n
 $modulesMarkdown
-
+`n
 $pesterMarkdown
-
+`n
 $gitMarkdown
-
+`n
 $pesterbadge
 $btbadge
 $releaseBadge
