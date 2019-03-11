@@ -185,6 +185,11 @@ function start-btbuild
                     - Added way to get git details for license, project, icon urls
                     - Added override where these are set in the module config
 
+                2019-03-10
+                    - Add a lastRelease hashtable to btconfig on release build complete
+                        - Add version and date
+                    - Also clone lastRelease to previous Release
+
                     
         .COMPONENT
             Bartender
@@ -983,6 +988,26 @@ function start-btbuild
                     write-verbose 'Adding new version to module config'
                     
                     $scriptVars.config.version  = $scriptVars.newReleaseVersion
+
+                    if(!$($scriptVars.config.previousRelease)){
+                        write-verbose 'lastRelease property missing from config, creating it'
+                        $scriptVars.config|add-member -MemberType NoteProperty -name previousRelease -Value @{}
+                    }
+
+                    if(!$($scriptVars.config.lastrelease)){
+                        write-verbose 'lastRelease property missing from config, creating it'
+                        $scriptVars.config|add-member -MemberType NoteProperty -name lastRelease -Value @{}
+                    }else{
+                        write-verbose 'Setting previous details from last release'
+                        $scriptVars.config.previousRelease = $scriptVars.config.lastrelease.clone()
+                    }
+
+
+                    write-verbose 'Adding lastRelease items to config'
+                    $scriptVars.config.lastRelease = @{
+                        version = $scriptVars.newReleaseVersion
+                        date = $(get-date)
+                    }
                     Export-Clixml -Path $scriptVars.configFilePath -InputObject $scriptVars.config
                     write-verbose 'Config file updated'
 

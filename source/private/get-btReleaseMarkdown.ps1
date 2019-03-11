@@ -57,6 +57,9 @@ function get-btReleaseMarkdown
                     - Moved the bartender badge to the right
                     - Fix the order of unmodified functions
                     - Fix the spacing around releaseNotes
+
+                2019-03-11 - AA
+                    - Changed to handle updated get-btChangeDetails script
                     
         .COMPONENT
             Bartender
@@ -119,7 +122,7 @@ function get-btReleaseMarkdown
 
         write-verbose 'Retrieving Change Details'
 
-        $changeDetails = get-btChangeDetails -modulePath $modulePath -ignoreLast
+        $changeDetails = get-btChangeDetails -modulePath $modulePath -newRelease
 
         if($changeDetails)
         {
@@ -140,28 +143,25 @@ function get-btReleaseMarkdown
             $modFiles = $($changeDetails.files|where-object{$_.fileIsModified -eq $true -and $_.fileIsNew -eq $false}|select-object $mdFileStringSelector).mdString | out-string
             if($newFiles)
             {
-                $newFilesMd = "### New Files`n$filesHeader`n$newFiles`n"
+                $newFilesMd = "#### New Files`n$filesHeader`n$newFiles`n"
             }
             if($modFiles)
             {
-                $modFilesMd = "### Modified Files`n$filesHeader`n$modFiles`n"
+                $modFilesMd = "#### Modified Files`n$filesHeader`n$modFiles`n"
             }
             if($unmodFiles)
             {
-                $unmodFilesMd = "### Unchanged Files`n$filesHeader`n$unmodFiles`n"
+                $unmodFilesMd = "#### Unchanged Files`n$filesHeader`n$unmodFiles`n"
             }
 
-            $filesMarkdown = "---`n## Files Summary`n`n$newFilesMd`n$modFilesMd`n$unmodFilesMd`n"
+            $filesMarkdown = "---`n## File`n`n### Summary`n`n$(get-btMarkdownFromHashtable  $changeDetails.filesummary)`n`n### File List`n`n$newFilesMd`n$modFilesMd`n$unmodFilesMd`n"
 
 
             write-verbose 'Creating Functions Section' 
-            <#
-            $blobLink = "[link](../blob/$branch/documentation/$versionString"
-            $closeBracket = ')'
-            #>
+
             $mdFunctionStringSelector = @{
                 name = 'mdString'
-                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown){"[link](../$versionString/functions/$($_.function).md)"})|$($_.relativePath)|"}
+                expression = {"|$($_.function)|$(if($_.folder -eq 'private'){"Private"}else{"Public"})|$(if($_.hasmarkdown){"[link](./functions/$($_.function).md)"})|$($_.relativePath)|"}
             }
 
             $functionsHeader = "|function|type|markdown link|filename|`n|-|-|-|-|"
@@ -170,18 +170,18 @@ function get-btReleaseMarkdown
             $modFuncs = $($changeDetails.functions|where-object{$_.fileIsModified -eq $true -and $_.fileIsNew -eq $false}|select-object $mdFunctionStringSelector).mdString | out-string
             if($newFuncs)
             {
-                $newFuncsMd = "### New Functions`n$functionsHeader`n$newFuncs"
+                $newFuncsMd = "#### New Functions`n$functionsHeader`n$newFuncs"
             }
             if($modFuncs)
             {
-                $modFuncsMd = "### Modified Functions`n$functionsHeader`n$modFuncs"
+                $modFuncsMd = "#### Modified Functions`n$functionsHeader`n$modFuncs"
             }
             if($unmodFuncs)
             {
-                $unmodFuncsMd = "### Unmodified Functions`n$functionsHeader`n$unmodFuncs"
+                $unmodFuncsMd = "#### Unmodified Functions`n$functionsHeader`n$unmodFuncs"
             }
 
-            $functionsMarkdown = "---`n## Functions Summary`n`n$newFuncsMd`n$modFuncsMd`n$unmodFuncsMd"
+            $functionsMarkdown = "---`n## Functions`n`n### Summary`n`n$(get-btMarkdownFromHashtable $changeDetails.functionSummary)`n`n### Function List`n`n$newFuncsMd`n$modFuncsMd`n$unmodFuncsMd"
         }
 
 
@@ -224,7 +224,7 @@ function get-btReleaseMarkdown
 
         write-verbose 'Generating GIT Badges'
 
-        $btbadge = "[btbadge]: https://img.shields.io/static/v1.svg?label=bartender&message=$($metadata.PrivateData.bartenderVersion)&color=blueviolet"
+        $btbadge = "[btbadge]: https://img.shields.io/static/v1.svg?label=bartender&message=$($metadata.PrivateData.bartenderVersion)&color=0B2047"
         $releaseBadge = "[releasebadge]: https://img.shields.io/static/v1.svg?label=version&message=$($metadata.moduleVersion)&color=blue"
         $commentBasedHelpCoverage = $changeDetails.summary.commentBasedHelpCoverage
         if(!$commentBasedHelpCoverage)

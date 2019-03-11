@@ -50,6 +50,9 @@ function add-btFilesAndFolders
 
                 2019-03-04
                     - Fix a bug where the stripping of auth tokens was accidentally a scriptblock
+
+                2019-03-11
+                    - Copy the readme.md if there is not one or the existing one is small
                     
          .COMPONENT
             Bartender
@@ -187,10 +190,32 @@ function add-btFilesAndFolders
 
             #Add the pester files
             add-btBasicTests -path $path
+
+
+            write-verbose 'Checking for readme.md'
+            $readmePath = "$path\readme.md"
+            $moduleBase = $(get-module bartender |sort-object -Property Version -Descending |Select-Object -First 1).moduleBase
+            $readmeCopy = "$modulebase\resource\readme.md"
+            if(test-path $readmeCopy)
+            {
+                if(!$(test-path $readmePath))
+                {
+                    #Always Copy
+                    write-warning 'readme.md not found, copying from btmodule'
+                    copy-item -Path $readmeCopy -Destination $readmePath -Force
+                }elseIf($(get-content -path $readmePath).Length -le 30){
+                    write-warning 'readme.md found, but length indicates not in use, copying from btModule'
+                }else{
+                    write-verbose 'readme.md found, length indicative file in use, will not copy from btModule'
+                }
+            }else{
+                write-verbose 'Resource readme not found'
+            }
             
         }else{
             throw 'This function should be called from other functions, use -force if you wish to proceed anyway'
         }     
+        
         
     }
     

@@ -95,6 +95,9 @@ function get-btFolderItems
                     - Added ability to process .btorderEnd and .btOrderStart
                     - Removed .btOrder processing
                     - Fixed a bug with empty lines in the .btOrder* files
+
+                2019-03-11 - AA
+                    - Changed a warning to a write-verbose
                     
                     
         .COMPONENT
@@ -159,7 +162,7 @@ function get-btFolderItems
                 $destinationFolder = get-item $Destination -erroraction stop
                 $destinationFolder = $destinationFolder.FullName
             }catch{
-                Write-warning 'Unable to verify destination folder - using assigned variable as path '
+                Write-verbose 'Unable to verify destination folder - using assigned variable as path '
                 $destinationFolder = $Destination
             }
             

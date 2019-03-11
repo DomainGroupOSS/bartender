@@ -168,7 +168,13 @@ function get-btDocumentation
             }catch{
                 write-warning 'Error creating release notes'
             }
-            
+
+            try{
+                update-btMarkdownHeader -path "$($invocationPath)"
+                write-verbose 'Updated readme.md header if possible'
+            }catch{
+                write-warning 'Error updating readme.md'
+            }
         }
     }
 }

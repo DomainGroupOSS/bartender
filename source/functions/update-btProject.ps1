@@ -258,6 +258,19 @@ function update-btProject
             }
         }
 
+        write-verbose 'Capturing release details'
+        if($existingSettings.lastRelease){
+            $lastRelease = $existingSettings.lastRelease
+        }else{
+            $lastRelease = @{}
+        }
+
+        if($existingSettings.previousRelease){
+            $previousRelease = $existingSettings.previousRelease
+        }else{
+            $previousRelease = @{}
+        }
+
         write-verbose 'Add in the GUID'
         $guid = $existingSettings.guid
         if(!$guid)
@@ -607,6 +620,8 @@ function update-btProject
             licenseUri = $licenseUri
             projectUri = $projectUri
             iconUri = $iconUri
+            lastRelease = $lastRelease
+            previousRelease = $previousRelease
         }
         Write-Debug "Your Config Object:`n`n$($config|Out-String)"
         if(!$config.version -or !$config.moduleName -or !$config.moduleAuthor -or !$config.companyName)
