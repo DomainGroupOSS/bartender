@@ -277,7 +277,7 @@ function start-btbuild
             $btModule = get-module bartender
         }
         write-verbose 'Got BtModule version'
-        #$btmodule = get-module -ListAvailable -Refresh -Name bartender |sort-object version -Descending|Select-Object -First 1
+        
         $metaData = @{
             version = $btmodule.version
             author = $btmodule.author
@@ -506,7 +506,7 @@ function start-btbuild
             #Making this a warning as well
         }
 
-        #$scriptVars.preloadFile = "$($scriptVars.moduleOutputFolder)\preload.ps1"
+        
         $scriptVars.preloadFileContents = $false
         $scriptVars.preloadFiles = @()
         foreach($preFile in @('enums.ps1','validators.ps1','classes.ps1'))
@@ -893,41 +893,6 @@ function start-btbuild
                     
                     write-verbose 'Creating new module manifest'
 
-                    <#
-                    #New mm the correct way
-                    #Issue with this way is
-                    #What if the module was changed with a postbuild script?
-                    #So this is not ideal
-                    
-                    $splatManifest.path = "$($scriptVars.releaseDirectory)\$($scriptVars.config.moduleName).psd1"
-                    $splatManifest.ModuleVersion = $scriptVars.newVersionAsTag
-                    remove-item "$($scriptVars.releaseDirectory)\$($scriptVars.config.moduleName).psd1" -Force -ErrorAction Ignore
-                    New-ModuleManifest @splatManifest
-                    #>
-                    
-                    <#
-                    #Find and replace method
-                    #Issue with this is it doesnt seem very clean
-                    #Also, what happens if there is a superfluous space or something
-                    
-                    
-                    #New mm the gc way
-
-                    $scriptVars.newManifestPath = "$($scriptVars.releaseDirectory)\$($scriptVars.config.moduleName).psd1"
-                    $scriptVars.newManifest = get-content $scriptVars.newManifestPath
-                    $scriptVars.newManifest = $scriptVars.newManifest.replace("ModuleVersion = '$($scriptvars.versionAsTag)'","ModuleVersion = '$($scriptVars.newVersionAsTag)'")
-                    $scriptVars.newManifest|out-file $scriptVars.newManifestPath
-
-                    #>
-
-                    <#
-                    #Use Configuration Module method
-                    #Only downside I can think of is that it requires the config module to be available
-                    #We should just make them a requirement
-                    #Along with Pester and PlatyPS
-                    
-                    
-                    #>
                     write-verbose 'Checking for Manifest file'
                     $scriptVars.newManifestPath = "$($scriptVars.releaseDirectory)\$($scriptVars.config.moduleName).psd1"
                     if(!$(test-path $scriptVars.newManifestPath))

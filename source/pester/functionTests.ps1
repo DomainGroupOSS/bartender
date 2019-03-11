@@ -199,7 +199,7 @@ describe 'Save/Retrieve btUser Defaults' {
 
 describe 'New BT Project' {
     context 'Create new Project' {
-        new-btProject -moduleName $btTestModuleName -moduleDescription $btTestModuleName -repository $btTestRepoName -publishOnBuild $false -companyName 'BartenderTest'
+        new-btProject -moduleName $btTestModuleName -moduleDescription $btTestModuleName -repository $btTestRepoName -publishOnBuild $false -companyName 'BartenderTest' -trimSpaces $true -Tags 'test' -RemoveEmptyLines $true -RemoveSingleLineQuotes $true
         it 'Should create a new project - including the btConfig.xml' {
             test-path "$btTestPath\btconfig.xml" | Should -Be $true
         }
@@ -324,9 +324,37 @@ function get-goodbyeWorld
     return `"goodbye `$name`"
 }
 "
+
+$classText = "
+class testClass
+{
+    [Names]`$name
+
+    testClass(`$name)
+    {
+        `$this.name = `$name
+    }
+    
+    [string] getName(){
+        return `$this.name
+    }
+}
+
+"
+
+$enumText = "
+enum Names {
+    James
+    Bob
+}
+"
+
+
 'not a PS1 file'|out-file -FilePath "$btTestPath\source\functions\notPowerShell.txt" |out-null
 $helloWorld | out-file -FilePath "$btTestPath\source\functions\helloworld.ps1" |out-null
 $goodbyeWorld | out-file -FilePath "$btTestPath\source\functions\goodbyeWorld.ps1" |out-null
+$classText | out-file -FilePath "$btTestPath\source\classes\classTest.ps1"
+$enumText |out-file -FilePath "$btTestPath\source\enums\names.ps1"
 
 #Make a postbuildscript
 $postBuild = @"
@@ -351,6 +379,12 @@ describe 'Create test Scripts' {
         }
         it 'Should have created the notPowerShell text file' {
             test-path "$btTestPath\source\functions\notPowershell.txt" | Should -Be $true
+        }
+        it 'Should have made a class file' {
+            test-path "$btTestPath\source\classes\classTest.ps1" | should -be $true
+        }
+        it 'Should have made an enum file' {
+            test-path "$btTestPath\source\enums\names.ps1" | should -be $true
         }
     }
 }
@@ -532,6 +566,57 @@ describe 'Test start-btBuild revision version' {
         it 'test.txt Should have contents of "some text"' {
             get-content "$contextFolder\test.txt" | Should -be 'some text'
         }
+    }
+}
+
+
+
+$contextVer = '1.0.0.2'
+$contextFolder = "$btTestPath\rev\$contextVer"
+describe 'Update the module, remove single line spaces' {
+    update-btProject -trimSpaces $false -RemoveSingleLineQuotes $false
+    $build = start-btbuild -ignoreBtVersion -WarningAction SilentlyContinue
+    context 'Check Build Return Object'{
+        it 'Should return a single custom object' {
+            $build.getType().Name |should -be 'PSCustomObject'
+            $build.getType().BaseType |Should -be 'System.Object'
+        }
+        
+    }
+    context 'Check Pester Results' {
+        it 'Should have passed building' {
+            $build.success |should -be $true
+        }
+        it 'Should have no pesterFails' {
+            $build.pesterFails | Should -be $null
+        }
+    }
+    context 'Check rev folder' {
+        it 'Should have a version folder' {
+            test-path "$contextFolder" | Should -be $true
+        }
+        it 'Should have a module manifest' {
+            test-path "$contextFolder\$btTestModuleName.psd1" | Should -be $true
+        }
+        it 'Should have a module file' {
+            test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
+        }
+        
+    }
+    context 'Ensure was not published' {
+        it 'Should have an empty repository' {
+            $moduleList = find-module -Repository $btTestRepoName -ErrorAction SilentlyContinue
+            $moduleList | should -be $null
+            $($moduleList|measure-object).count | Should -be 0
+        }
+    }
+
+}
+
+describe 'Check the get-btChangeDetails function' {
+    $changeDetails = get-btChangeDetails -modulePath $btTestPath
+    it 'Should have captured the correct version' {
+        $changeDetails.summary.version | should -be $contextVer
     }
 }
 
