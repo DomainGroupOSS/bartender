@@ -35,6 +35,10 @@ function update-btMarkdownHeader
                     
                     - Initial Script
                     - Updated start-btBuild to get release data
+
+                2019-03-11 - AA
+                    - Fixed the icon missing
+                    
                     
         .COMPONENT
             What cmdlet does this script live in
@@ -108,7 +112,7 @@ function update-btMarkdownHeader
         write-verbose 'Generating new Markdown'
         $headerArr = @(
             "# $($config.modulename.toUpper())",
-            "$(if(test-path "$path\icon.png"){'![logo](\icon.png)'})",
+            "$(if(test-path "$path\icon.png"){'![logo](.\icon.png)'})",
             "",
             "> $($config.moduleDescription)",
             "",
