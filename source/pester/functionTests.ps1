@@ -359,7 +359,7 @@ $enumText |out-file -FilePath "$btTestPath\source\enums\names.ps1"
 #Make a postbuildscript
 $postBuild = @"
 write-verbose 'Creating test file'
-`$testPath = "`$(`$scriptVars.moduleOutputFolder)\test.txt"
+`$testPath = "$btTestPath\test.txt"
 write-verbose "TestPath: `$testpath"
 'some text'|out-file `$testpath -Force
 "@
@@ -559,14 +559,7 @@ describe 'Test start-btBuild revision version' {
         }
     }
 
-    context 'Should have executed our postbuildScript'{
-        it 'Should have made a test.txt file' {
-            test-path "$contextFolder\test.txt" | Should -be $true
-        }
-        it 'test.txt Should have contents of "some text"' {
-            get-content "$contextFolder\test.txt" | Should -be 'some text'
-        }
-    }
+    
 }
 
 
@@ -659,6 +652,15 @@ describe "Test start-btBuild build to $contextFolder" {
             $moduleList = find-module -Repository $btTestRepoName -ErrorAction SilentlyContinue
             $moduleList | should -be $null
             $($moduleList|measure-object).count | Should -be 0
+        }
+    }
+
+    context 'Should have executed our postbuildScript'{
+        it 'Should have made a test.txt file' {
+            test-path "$btTestPath\test.txt" | Should -be $true
+        }
+        it 'test.txt Should have contents of "some text"' {
+            get-content "$btTestPath\test.txt" | Should -be 'some text'
         }
     }
         
