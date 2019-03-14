@@ -189,6 +189,12 @@ function start-btbuild
                     - Add a lastRelease hashtable to btconfig on release build complete
                         - Add version and date
                     - Also clone lastRelease to previous Release
+                
+                2019-03-12
+                    - Fix the icon link when generating from git
+
+                2019-03-14
+                    - Move the postBuildScript step to after release
 
                     
         .COMPONENT
@@ -746,7 +752,7 @@ function start-btbuild
                 #See if icon.png exists and if it does, add it in as well
                 if($(test-path "$invocationPath\icon.png"))
                 {
-                    $splatManifest.iconUri = "$($scriptVars.gitSettings.origin)/icon.png"
+                    $splatManifest.iconUri = "$($scriptVars.gitSettings.origin)/blob/$($($($scriptVars.gitSettings.branch).replace('*','')).trim())/icon.png"
                 }
                     
             }else{
@@ -806,14 +812,6 @@ function start-btbuild
             New-ModuleManifest @splatManifest
         }
 
-        #PostBuildScripts go here
-        $postBuildScripts = get-btFolderItems -psScriptsOnly -Path "$invocationPath\postbuildscripts"
-        write-debug 'Execute postbuild scripts'
-        foreach($postbuildscript in $postbuildscripts)
-        {
-            write-verbose "Executing postbuild script $($postbuildscript.relativepath)"
-            . $postBuildScripts.Path
-        }
         
         #work out whether we should publish
         write-verbose "Script config publish default: $($scriptVars.config.publishOnBuild)"
@@ -997,6 +995,15 @@ function start-btbuild
                     get-btDocumentation -path $invocationPath -configFile $configFile
                 }else{
                     write-verbose 'Skipping documentation update'
+                }
+
+                #PostBuildScripts go here
+                $postBuildScripts = get-btFolderItems -psScriptsOnly -Path "$invocationPath\postbuildscripts"
+                write-debug 'Execute any postbuild scripts'
+                foreach($postbuildscript in $postbuildscripts)
+                {
+                    write-verbose "Executing postbuild script $($postbuildscript.relativepath)"
+                    . $postBuildScripts.Path
                 }
 
             }else{
