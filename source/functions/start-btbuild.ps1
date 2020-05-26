@@ -7,7 +7,7 @@ function start-btbuild
             Grab all the scripts.
             Compile into a single module file.
             Create a manifest.
-            
+
         .DESCRIPTION
             - Increment the version depending on the switch used
             - Grab any scripts, dsc resources etc from the source file
@@ -22,7 +22,7 @@ function start-btbuild
               - If incrementing build,major,minor version and autopublish in config OR
               - If publish is true with switch
                 - Push to the repository specified
-            
+
         .PARAMETER configFile
             Default 'btconfig.xml'
             The config file to use
@@ -45,7 +45,7 @@ function start-btbuild
         .PARAMETER test
             Override the config files settings
             One day, might actually trigger a test
-        
+
         .PARAMETER publish
 
             Boolean value
@@ -55,14 +55,14 @@ function start-btbuild
         .PARAMETER ignoreBtVersion
 
             Run even if there is a difference in bartender versions
-                        
+
         .EXAMPLE
             start-btbuild
-            
+
         #### DESCRIPTION
             Increment the revision version, good way to ensure everything works
-            
-            
+
+
         #### OUTPUT
             New module manifest and module file, or overright the existing build version.
             Test the module
@@ -70,38 +70,38 @@ function start-btbuild
 
         .EXAMPLE
             start-btbuild -verbose -incrementbuildversion
-            
+
         #### DESCRIPTION
             Increment the build version
             Depending on the btconfig.xml, push to a repository
-            
+
         #### OUTPUT
             New module manifest and module file, or overright the existing build version.
             Test the module
             Create documentation if enabled
             Publish the module if required
-            
-            
-            
+
+
+
         .NOTES
             Author: Adrian Andersson
             Last-Edit-Date: 2018/05/17
-            
-            
+
+
            Changelog:
 
                 2018-04-19 - AA
-                    
+
                     - Initial Script
                     - Added primary functionality
                     - Based off the combine scripts
-               
+
                 2018-04-23 - AA
-                    
-                    - Many, Many things fixed     
+
+                    - Many, Many things fixed
 
                 2018-04-26 - AA
-                    
+
                     - Fixed the help
                     - Changed the add-files to use get-btscripttext
                         - Improved dscresource gathering
@@ -152,7 +152,7 @@ function start-btbuild
                 2018-10-08
                     - Removed nested modules for when using DSC, still not the best when dealing with Dsc
                     - Brute force added the enums to the main module when using DSC, its not ideal but I'm out of ideas
-                
+
                 2018-10-30
                     - Added postbuildscripts
                         - Need to check if the path is ok (it is)
@@ -189,14 +189,14 @@ function start-btbuild
                     - Add a lastRelease hashtable to btconfig on release build complete
                         - Add version and date
                     - Also clone lastRelease to previous Release
-                
+
                 2019-03-12
                     - Fix the icon link when generating from git
 
                 2019-03-14
                     - Move the postBuildScript step to after release
 
-                    
+
         .COMPONENT
             Bartender
     #>
@@ -255,7 +255,7 @@ function start-btbuild
         #Return the script name when running verbose, makes it tidier
         write-verbose "===========Executing $($MyInvocation.InvocationName)==========="
         #Return the sent variables when running debug
-        
+
         Write-Debug "BoundParams: $($MyInvocation.BoundParameters|Out-String)"
 
         #Remove last pester result
@@ -274,7 +274,7 @@ function start-btbuild
             $content = "`n<#$divide`n$header`n$divide#>"
             $content|Out-File  $scriptVars.moduleFile -Append
         }
-        
+
         #Need to install the module first though
         $btModule = get-module bartender
         if(!$btModule)
@@ -283,7 +283,7 @@ function start-btbuild
             $btModule = get-module bartender
         }
         write-verbose 'Got BtModule version'
-        
+
         $metaData = @{
             version = $btmodule.version
             author = $btmodule.author
@@ -291,7 +291,7 @@ function start-btbuild
             name = $btmodule.Name
             description = $btmodule.Description
         }
-        
+
         if(test-path "$invocationPath\$($privateDataFile)")
         {
             write-warning 'Importing privateDataFile, if this is a hashtable it will be added to the module manifest'
@@ -317,8 +317,8 @@ function start-btbuild
         write-verbose "PrivateData debug type: $($metaData.manifestPrivateData.GetType().name)"
         write-verbose "PrivateData debug Data:`n $($metaData.manifestPrivateData|out-string)"
         #Where was this command run from
-        
-        
+
+
         $scriptVars = @{}
         $scriptVars.configFilePath = "$invocationPath\$($configFile)"
         [array]$scriptVars.folders = @('enums','functions','filters','validationClasses','dscClasses','classes','private')
@@ -346,17 +346,17 @@ function start-btbuild
         #EmptyFunctionsArray
         $scriptVars.functionsToExport = @()
         $scriptVars.DscResourcesToExport = @()
-        
+
     }
-    
+
     process{
 
         write-verbose "InvocationPath: $invocationPath"
         write-verbose "configfile: $configfile"
-        
-        
+
+
         write-verbose 'Validating Config File'
-        
+
         if(!$(test-path $scriptVars.configFilePath))
         {
             throw $throwExceptions.noConfigError
@@ -374,7 +374,7 @@ function start-btbuild
                 {
                     write-verbose 'Confirming BarTender Version'
                     $currentBtVersion = $btModule.version
-                    write-verbose "String: $($scriptVars.config.bartenderVersion)" 
+                    write-verbose "String: $($scriptVars.config.bartenderVersion)"
                     $configBtVersion = [version]$($scriptVars.config.bartenderVersion)
                     Write-Verbose "Config: $($configBtVersion.ToString())"
                     Write-Verbose "module: $($currentBtVersion.ToString())"
@@ -398,7 +398,7 @@ function start-btbuild
                     Write-Verbose 'Incrementing Revision Version'
                     $scriptVars.newVersion = [version]::new($($scriptVars.config.version.Major),$($scriptVars.config.version.Minor),$($scriptVars.config.version.Build),$($scriptVars.config.version.revision + 1))
                     write-verbose $scriptVars.newVersion
-                    
+
                 }else{
                     write-warning 'Skipping revision incrementation'
                 }
@@ -411,7 +411,7 @@ function start-btbuild
                         $scriptVars.newReleaseVersion = [version]::new($($scriptVars.config.version.Major),$($scriptVars.config.version.Minor + 1),0,0)
                         $scriptVars.newVersionAsTag = "$($scriptVars.newReleaseVersion.Major).$($scriptVars.newReleaseVersion.Minor).$($scriptVars.newReleaseVersion.Build)"
                     }
-                    
+
                     'majorVersion' {
                         write-verbose 'Push Major Release'
                         $scriptvars.build = $true
@@ -419,7 +419,7 @@ function start-btbuild
                         $scriptVars.newVersionAsTag = "$($scriptVars.newReleaseVersion.Major).$($scriptVars.newReleaseVersion.Minor).$($scriptVars.newReleaseVersion.Build)"
                     }
 
-                    'buildVersion' {  
+                    'buildVersion' {
                         write-verbose 'Push Build Release'
                         $scriptvars.build = $true
                         $scriptVars.newReleaseVersion = [version]::new($($scriptVars.config.version.Major),$($scriptVars.config.version.Minor),$($scriptVars.config.version.Build + 1),0)
@@ -427,7 +427,7 @@ function start-btbuild
                     }
                 }
 
-                
+
 
                 if($scriptVars.newVersion)
                 {
@@ -477,11 +477,11 @@ function start-btbuild
         #Check the folders, paths, tags, versions
         $scriptVars.functionResources = @()
 
-        
+
         write-verbose 'Creating in revision directory'
-            
+
         $scriptVars.moduleOutputFolder = "$invocationPath\rev\$($scriptVars.versionAsTag)"
-        
+
         write-verbose "Module will be saved to $($scriptVars.moduleOutputFolder)"
         if(!(test-path $scriptVars.moduleOutputFolder))
         {
@@ -512,7 +512,7 @@ function start-btbuild
             #Making this a warning as well
         }
 
-        
+
         $scriptVars.preloadFileContents = $false
         $scriptVars.preloadFiles = @()
         foreach($preFile in @('enums.ps1','validators.ps1','classes.ps1'))
@@ -539,8 +539,8 @@ function start-btbuild
         foreach($folder in $scriptVars.folders)
         {
             Write-Verbose "Processing folder $folder"
-            
-            $folderItems = get-btfolderItems -Path "$invocationPath\source\$folder" -psScriptsOnly 
+
+            $folderItems = get-btfolderItems -Path "$invocationPath\source\$folder" -psScriptsOnly
             if($($folderItems | measure-object).Count -ge 1)
             {
 
@@ -601,7 +601,7 @@ function start-btbuild
 
                         Default {
                             write-debug "Processing folder: $folder"
-                            $textOutput.output|Out-File  $scriptVars.moduleFile -Append 
+                            $textOutput.output|Out-File  $scriptVars.moduleFile -Append
                             if($textOutput.functionResources.count -ge 1)
                             {
                                 $scriptVars.functionsToExport += $textOutput.functionResources
@@ -613,8 +613,8 @@ function start-btbuild
                             }
                         }
                     }
-                    
-                    
+
+
                 }else{
                     write-verbose 'No script contents to include'
                 }
@@ -622,10 +622,10 @@ function start-btbuild
             }else{
                 write-verbose 'No PS1 files found, ignoring'
             }
-            
+
         }
         remove-variable folder -ErrorAction SilentlyContinue
-        
+
     }end{
         write-verbose 'Copying Static Files'
         $folders = @('lib','bin','resource')
@@ -634,13 +634,13 @@ function start-btbuild
             $copiedItems = get-btfolderItems -path "$invocationPath\source\$folder" -destination "$($scriptVars.moduleOutputFolder)\$folder" -Copy
             Write-Verbose "Copied $($copiedItems.count) static items"
         }
-        
+
 
         write-verbose "Version: $($scriptVars.config.version)"
         #By making the hashtable ordered
         #And declaring the things we want null AS Actually null
         #It should actually make them null
-        #New-ModuleManifest seems to CARE what order the params are set, 
+        #New-ModuleManifest seems to CARE what order the params are set,
         #if you export functions it sets * to aliases and cmdlets
         $splatManifest = [ordered]@{
             Path = $scriptVars.manifestFile
@@ -675,7 +675,7 @@ function start-btbuild
             $enumsContent | out-file $scriptVars.moduleFile -Force
             $moduleContent | out-file $scriptVars.moduleFile -Append
         }
-        
+
         if($scriptVars.config.Tags){
             Write-Verbose 'Adding Tags'
             $splatManifest.tags = $scriptVars.config.Tags
@@ -726,7 +726,7 @@ function start-btbuild
             $splatManifest.ReleaseNotes = $ReleaseNotes
         }
 
-        
+
         if($scriptVars.config.useGitDetails -eq $true)
         {
             write-verbose 'Adding Git Details'
@@ -754,27 +754,27 @@ function start-btbuild
                 {
                     $splatManifest.iconUri = "$($scriptVars.gitSettings.origin)/blob/$($($($scriptVars.gitSettings.branch).replace('*','')).trim())/icon.png"
                 }
-                    
+
             }else{
                 write-warning 'useGitDetails is set to true, but was unable to get the repository settings'
             }
-            
+
         }
 
         if($scriptVars.config.licenseUri -and $scriptVars.config.licenseUri.length -gt 5)
-        {   
+        {
             write-verbose 'Adding config LicenseUri'
             $splatManifest.licenseUri = $scriptVars.config.licenseUri
         }
 
         if($scriptVars.config.projectUri -and $scriptVars.config.projectUri.length -gt 5)
-        {   
+        {
             write-verbose 'Adding config projectUri'
             $splatManifest.projectUri = $scriptVars.config.projectUri
         }
 
         if($scriptVars.config.iconUri -and $scriptVars.config.iconUri.length -gt 5)
-        {   
+        {
             write-verbose 'Adding config iconUri'
             $splatManifest.iconUri = $scriptVars.config.iconUri
         }
@@ -812,7 +812,7 @@ function start-btbuild
             New-ModuleManifest @splatManifest
         }
 
-        
+
         #work out whether we should publish
         write-verbose "Script config publish default: $($scriptVars.config.publishOnBuild)"
         if($scriptVars.config.publishOnBuild -eq $true)
@@ -828,15 +828,15 @@ function start-btbuild
             $null {
                 if($scriptvars.build)
                 {
-                    $scriptVars.shouldPublish = $scriptVars.defaultPublish 
+                    $scriptVars.shouldPublish = $scriptVars.defaultPublish
                 }else{
                     $scriptVars.shouldPublish = $false
                 }
             }
-            Default { 
+            Default {
                 if($scriptvars.build)
                 {
-                    $scriptVars.shouldPublish = $scriptVars.defaultPublish 
+                    $scriptVars.shouldPublish = $scriptVars.defaultPublish
                 }else{
                     $scriptVars.shouldPublish = $false
                 }
@@ -853,12 +853,12 @@ function start-btbuild
                 $scriptvars.testResults = start-btTestPhase -path $invocationPath -configFile $configFile -modulePath "$($scriptVars.moduleOutputFolder)"
 
             }catch{
-                throw 'Unable to initiate Test Phase' 
+                throw 'Unable to initiate Test Phase'
             }
         }
-        
-        
-        
+
+
+
         if(($scriptvars.testResults.success -eq $true) -or ($ignoreTest -eq $true))
         {
             if($scriptvars.testResults.pesterDetails)
@@ -871,7 +871,7 @@ function start-btbuild
                 write-warning 'Tests explicitely ignored'
             }
 
-            
+
             #$scriptvars.build
             if($scriptvars.build -eq $true)
             {
@@ -888,7 +888,7 @@ function start-btbuild
                     new-item -itemtype Directory -Path $scriptVars.releaseDirectory|out-null
                     write-verbose 'Cloning'
                     copy-item -Path "$($scriptVars.moduleOutputFolder)\*" -Destination "$($scriptVars.releaseDirectory)\" -recurse
-                    
+
                     write-verbose 'Creating new module manifest'
 
                     write-verbose 'Checking for Manifest file'
@@ -913,7 +913,7 @@ function start-btbuild
                     #Update the version
                     $metadata.ModuleVersion = $scriptVars.newVersionAsTag
                     #Add pester details
-                    
+
                     if($global:lastPesterResult)
                     {
                         write-verbose 'Adding Pester details to manifest'
@@ -925,7 +925,7 @@ function start-btbuild
                         $metadata.privatedata.pester.passed = "$passed %"
                     }
 
-                    
+
                     #Save the file
                     write-verbose 'Saving manifest file'
                     try{
@@ -933,7 +933,7 @@ function start-btbuild
                     }catch{
                         throw 'Error updating Manifest file'
                     }
-                    
+
 
                     #Test
                     write-verbose 'Ensuring Manifest still valid'
@@ -949,7 +949,7 @@ function start-btbuild
                     $scriptVars.config.versionAsTag = $scriptVars.newVersionAsTag
 
                     write-verbose 'Adding new version to module config'
-                    
+
                     $scriptVars.config.version  = $scriptVars.newReleaseVersion
 
                     if(!$($scriptVars.config.previousRelease)){
@@ -983,10 +983,10 @@ function start-btbuild
                         {
                             publish-btmodule -Repository $repo
                         }
-                        
+
                     }
 
-                    
+
                 }
 
                 if($scriptVars.config.autoDocument -eq $true)
@@ -1009,7 +1009,7 @@ function start-btbuild
             }else{
                 Write-Verbose 'No publish triggered'
             }
-            
+
         }else{
             #Write-Verbose 'Failed the testing phase'
             Write-Error 'Failed the testing phase'
@@ -1024,17 +1024,17 @@ function start-btbuild
             }
         }
 
-        
+
         #Last step, cleanup vars
         write-debug 'Clean up old revisions'
         write-verbose 'Cleaning up old revisions'
         start-btRevisionCleanup -path $invocationPath
-        
+
         remove-variable splatManifest,scriptvars -ErrorAction SilentlyContinue
 
-        
+
         write-verbose 'Finished btbuild run'
         write-information 'Finished btbuild run'
     }
-    
+
 }

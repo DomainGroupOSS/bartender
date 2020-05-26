@@ -4,14 +4,14 @@ function save-btRepository
     <#
         .SYNOPSIS
             Save API token and, if supplied, Repository Credentials
-            
+
         .DESCRIPTION
-            Save API token and credentials, in order to provide the ability to publish/find modules without 
+            Save API token and credentials, in order to provide the ability to publish/find modules without
             having to enter this stuff all the time
-        
+
         .PARAMETER repository
             Name of the repository to use the credentials against
-            
+
             Requires repository to already be registered
 
         .PARAMETER token
@@ -30,30 +30,30 @@ function save-btRepository
 
         .EXAMPLE
             save-btRepository -repository myRepo -token MyAPIToken -credentail get-credential
-            
+
             #### DESCRIPTION
             Will save the repository myRepo with the token, and prompt once for credentials.
-            
-            
+
+
             #### OUTPUT
             Copy of the output of this line
-            
-            
-            
+
+
+
         .NOTES
             Author: Adrian Andersson
             Last-Edit-Date: yyyy-mm-dd
-            
-            
+
+
             Changelog:
                 2019-02-01 - AA
-                    
+
                     - Initial Script
                         - Unsure what to do about LINUX and PSCORE
                         - Obviously the save path is less than ideal
                         - Also unsure what will happen with roaming profiles
                         - What if we include _this_ computername in the filename
-                    
+
         .COMPONENT
             What cmdlet does this script live in
     #>
@@ -72,9 +72,9 @@ function save-btRepository
         write-verbose "===========Executing $($MyInvocation.InvocationName)==========="
         #Return the sent variables when running debug
         Write-Debug "BoundParams: $($MyInvocation.BoundParameters|Out-String)"
-      
+
     }
-    
+
     process{
         #Where should we save the module
         write-verbose 'Getting Save location'
@@ -94,7 +94,7 @@ function save-btRepository
         }else{
             throw 'Local Profile unavailable'
         }
-        
+
         write-verbose 'Checking for valid repository'
         if($repository -notIn $(get-psrepository).name)
         {
@@ -132,10 +132,10 @@ function save-btRepository
         }else{
             write-warning "No credentials supplied.`nIf your repository requires credentials for saving, you will need to provide them here as well.`nFailure to do so will cause errors when including required/dependant modules"
         }
-        
+
         write-debug 'Save the file'
         write-verbose 'Updating saved repositories file'
         $btRepositories|export-clixml $btRepositoriesPath -force
     }
-    
+
 }

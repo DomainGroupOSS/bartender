@@ -84,17 +84,17 @@ describe 'Save and retrieve btRepository settings' {
         }catch{
             $savedRepo = $false
         }
-        
-        
+
+
         it 'Should have saved a repo' {
             $savedRepo| should -be $true
-    
+
         }
     }
 
     context 'Retrieve Repository' {
         $savedRepository = get-btRepository $btTestRepoName
-        
+
         it 'Should have returned a hashtable' {
             $savedRepository.getType().Name |should -be 'Hashtable'
 
@@ -107,7 +107,7 @@ describe 'Save and retrieve btRepository settings' {
 
     context 'Retrieve Repository' {
         $savedRepository = get-btRepository $btTestRepoName
-        
+
         it 'Should have returned a hashtable' {
             $savedRepository.getType().Name |should -be 'Hashtable'
 
@@ -117,25 +117,25 @@ describe 'Save and retrieve btRepository settings' {
             $savedRepository.nugetApiKey |should -be 'NotAToken'
         }
     }
-    
+
     context 'Update Token' {
         try{
-            save-btRepository -repository $btTestRepoName -token 'StillNotAToken' -update -errorAction stop 
+            save-btRepository -repository $btTestRepoName -token 'StillNotAToken' -update -errorAction stop
             $savedRepo = $true
         }catch{
             $savedRepo = $false
         }
-        
-        
+
+
         it 'Should have saved a repo' {
             $savedRepo| should -be $true
-    
+
         }
     }
 
     context 'Should retrieve appropriate updates' {
         $savedRepository = get-btRepository $btTestRepoName
-        
+
         it 'Should have returned a hashtable' {
             $savedRepository.getType().Name |should -be 'Hashtable'
 
@@ -150,11 +150,11 @@ describe 'Save and retrieve btRepository settings' {
 $oldSettings = get-btDefaultSettings
 describe 'Save/Retrieve btUser Defaults' {
     #This is tricky because we do not really want to overwrite the existing settings
-    
+
 
     context 'Save settings with publishBuild set to true' {
 
-    
+
         try{
             save-btDefaultSettings -update -publishOnBuild $true
             $savedSettings = $true
@@ -230,16 +230,16 @@ describe 'Remove Functions Folder' {
 describe 'Update BT Project' {
     context 'It should run the update-btFileStructure function' {
         try {
-            update-btFileStructure -force -path $btTestPath 
+            update-btFileStructure -force -path $btTestPath
             $errorSeen = $false
         }catch{
             $errorSeen = $true
         }
-        
-        it 'Should run without errors'{ 
+
+        it 'Should run without errors'{
             $ErrorSeen | Should -Be $false
         }
-         
+
     }
 }
 
@@ -269,10 +269,10 @@ function get-helloWorld
     <#
         .SYNOPSIS
             Test function
-            
+
         .DESCRIPTION
             Test function
-            
+
         .PARAMETER name
             Name to say hi to
 
@@ -300,10 +300,10 @@ function get-goodbyeWorld
     <#
     .SYNOPSIS
         Test function
-        
+
     .DESCRIPTION
         Test function
-        
+
     .PARAMETER name
         Name to say hi to
 
@@ -334,7 +334,7 @@ class testClass
     {
         `$this.name = `$name
     }
-    
+
     [string] getName(){
         return `$this.name
     }
@@ -512,7 +512,7 @@ describe 'Test get-folderItems and get-btScriptText' {
             $testScriptText.functionResources |Should -contain 'get-helloWorld'
             $testScriptText.functionResources |Should -contain 'get-goodbyeworld'
         }
-    
+
         it 'Should have the _function_ keyword on the second line' {
             $testScriptText.output.Substring(1,8) |Should -be 'function'
         }
@@ -529,7 +529,7 @@ describe 'Test start-btBuild revision version' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -549,7 +549,7 @@ describe 'Test start-btBuild revision version' {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was not published' {
         it 'Should have an empty repository' {
@@ -559,7 +559,7 @@ describe 'Test start-btBuild revision version' {
         }
     }
 
-    
+
 }
 
 
@@ -574,7 +574,7 @@ describe 'Update the module, remove single line spaces' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -594,7 +594,7 @@ describe 'Update the module, remove single line spaces' {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was not published' {
         it 'Should have an empty repository' {
@@ -616,16 +616,14 @@ describe 'Check the get-btChangeDetails function' {
 $contextVer = '1.0.1'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Test start-btBuild build to $contextFolder" {
-    
-
     $build = start-btbuild -ignoreBtVersion -incrementBuildVersion -WarningAction SilentlyContinue
-    $lastPesterResult|export-clixml c:\temp\lastPesterResult.xml
+    #$lastPesterResult|export-clixml c:\temp\lastPesterResult.xml
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -645,7 +643,7 @@ describe "Test start-btBuild build to $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was not published' {
         it 'Should have an empty repository' {
@@ -663,20 +661,20 @@ describe "Test start-btBuild build to $contextFolder" {
             get-content "$btTestPath\test.txt" | Should -be 'some text'
         }
     }
-        
+
 }
 
 $contextVer = '1.1.0'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Updating minor version to folder $contextFolder" {
-    
+
     $build = start-btbuild -ignoreBtVersion -incrementMinorVersion -WarningAction SilentlyContinue
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -696,7 +694,7 @@ describe "Updating minor version to folder $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was not published' {
         it 'Should have an empty repository' {
@@ -705,21 +703,21 @@ describe "Updating minor version to folder $contextFolder" {
             $($moduleList|measure-object).count | Should -be 0
         }
     }
-        
+
 }
 
 $contextVer = '2.0.0'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Updating minor version to $contextFolder" {
-    
+
     $build = start-btbuild -ignoreBtVersion -incrementMajorVersion -WarningAction SilentlyContinue
-    
+
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -739,7 +737,7 @@ describe "Updating minor version to $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was not published' {
         it 'Should have an empty repository' {
@@ -748,20 +746,20 @@ describe "Updating minor version to $contextFolder" {
             $($moduleList|measure-object).count | Should -be 0
         }
     }
-        
+
 }
 
 $contextVer = '2.0.1'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Check publish to folder $contextFolder" {
-    
+
     $build = start-btbuild -ignoreBtVersion -incrementBuildVersion -publish $true -WarningAction SilentlyContinue
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -781,7 +779,7 @@ describe "Check publish to folder $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
     context 'Ensure was published' {
         $moduleList = find-module -Repository $btTestRepoName -ErrorAction Stop
@@ -790,7 +788,7 @@ describe "Check publish to folder $contextFolder" {
             $($moduleList|measure-object).count | Should -be 1
         }
     }
-        
+
 }
 
 describe 'Check documentation folder after publish' {
@@ -818,14 +816,14 @@ describe 'Check documentation folder after publish' {
 $contextVer = '2.0.2'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Check update publish to folder $contextFolder" {
-    
+
     $build = start-btbuild -ignoreBtVersion -incrementBuildVersion -publish $true -WarningAction SilentlyContinue
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -845,7 +843,7 @@ describe "Check update publish to folder $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
 
     context 'Ensure was published' {
@@ -863,7 +861,12 @@ describe "Check update publish to folder $contextFolder" {
 
 #Need to add a module Dependency
 describe 'Upload Pester Module to the test repository' {
-    Publish-Module -Repository $btTestRepoName -Name 'Pester' -RequiredVersion $(get-module -name pester|sort-object -Property Version -Descending|select-object -First 1).version
+    $PesterModule = $(get-module -name pester -listavailable|sort-object -Property Version -Descending|select-object -First 1)
+    #Need to specify the path because we may have multiple copies of the same module due to different PS module paths
+    #Thanks mostly to the changes in PS 7
+    ##  Remove this as a result: Since we are using the path based parameter set
+    ### -RequiredVersion $PesterModule.version -Name 'Pester'
+    Publish-Module -Repository $btTestRepoName -path $PesterModule.ModuleBase #Some serious inconsistency here, it wants -path, but not the path returned from get-module
     $findPester = find-module -Name pester -Repository $btTestRepoName
     $findPester |should -be $true
 }
@@ -876,7 +879,7 @@ describe 'Check the updateProject command to add a new requiredModule' {
             $configImport.requiredModules -contains 'Pester'|should -be $true
         }
         it 'Should have no other requirements' {
-            $configImport.requiredModules.Count |should -be 1  
+            $configImport.requiredModules.Count |should -be 1
         }
     }
 }
@@ -885,14 +888,14 @@ describe 'Check the updateProject command to add a new requiredModule' {
 $contextVer = '2.0.3'
 $contextFolder = "$btTestPath\$btTestModuleName\$contextVer"
 describe "Check update publish to folder $contextFolder" {
-    
+
     $build = start-btbuild -ignoreBtVersion -incrementBuildVersion -publish $true -WarningAction SilentlyContinue
     context 'Check Build Return Object'{
         it 'Should return a single custom object' {
             $build.getType().Name |should -be 'PSCustomObject'
             $build.getType().BaseType |Should -be 'System.Object'
         }
-        
+
     }
     context 'Check Pester Results' {
         it 'Should have passed building' {
@@ -912,7 +915,7 @@ describe "Check update publish to folder $contextFolder" {
         it 'Should have a module file' {
             test-path "$contextFolder\$btTestModuleName.psm1" | Should -be $true
         }
-        
+
     }
 
     context 'Ensure was published' {
@@ -944,7 +947,7 @@ if($btTestRepo)
     #Remove the old repository, make sure that the path is correct
     Unregister-PSRepository -name $btTestRepoName
 }
-       
+
 describe 'Repository removal' {
     context 'Check test repsitory does not exist' {
         $btTestRepo = $(get-psrepository -name $btTestRepoName -ErrorAction Ignore)
